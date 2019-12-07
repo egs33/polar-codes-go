@@ -88,6 +88,18 @@ type listDecodePath struct {
 }
 
 func (code PolarCode) SuccessiveCancellationListDecode(received []float64, listSize int) []int {
+	decodedList := code.sclDecodeInner(received, listSize)
+
+	decoded := make([]int, 0)
+	for index, bit := range decodedList[0].bits {
+		if code.informationBitSet.Contains(index) {
+			decoded = append(decoded, bit)
+		}
+	}
+	return decoded
+}
+
+func (code PolarCode) sclDecodeInner(received []float64, listSize int) []listDecodePath {
 	decodedList := []listDecodePath{{pathMetrics: 0, bits: make([]int, 0)}}
 	for i := 0; i < code.length; i++ {
 		if !code.informationBitSet.Contains(i) {
@@ -122,12 +134,22 @@ func (code PolarCode) SuccessiveCancellationListDecode(received []float64, listS
 		})
 		decodedList = nextDecodedList[0:listSize]
 	}
+	return decodedList
+}
 
-	decoded := make([]int, 0)
-	for index, bit := range decodedList[0].bits {
-		if code.informationBitSet.Contains(index) {
-			decoded = append(decoded, bit)
+func (code PolarCode) SuccessiveCancellationNonUniqueListDecode(received []float64, listSize int) [][]int {
+	decodedList := code.sclDecodeInner(received, listSize)
+
+	allDecoded := make([][]int, len(decodedList))
+	for i, decoded := range decodedList {
+		informationBits := make([]int, 0)
+		for index, bit := range decoded.bits {
+			if code.informationBitSet.Contains(index) {
+				informationBits = append(informationBits, bit)
+			}
 		}
+		allDecoded[i] = informationBits
 	}
-	return decoded
+
+	return allDecoded
 }
