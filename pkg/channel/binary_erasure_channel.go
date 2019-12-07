@@ -16,11 +16,11 @@ func (bec BinaryErasureChannel) CalcErrorProbabilityOfCombinedChannel(length int
 }
 
 func NewBinaryErasureChannel(erasureProbability float64) BinaryErasureChannel {
+	rand.Seed(time.Now().UnixNano())
 	return BinaryErasureChannel{erasureProbability: erasureProbability}
 }
 
 func (bec BinaryErasureChannel) Channel(input []int) []float64 {
-	rand.Seed(time.Now().UnixNano())
 	output := make([]float64, len(input))
 
 	for index, bit := range input {

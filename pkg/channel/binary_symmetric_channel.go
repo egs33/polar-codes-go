@@ -17,11 +17,11 @@ func (bsc BinarySymmetricChannel) CalcErrorProbabilityOfCombinedChannel(length i
 }
 
 func NewBinarySymmetricChannel(crossoverProbability float64) BinarySymmetricChannel {
+	rand.Seed(time.Now().UnixNano())
 	return BinarySymmetricChannel{crossoverProbability: crossoverProbability}
 }
 
 func (bsc BinarySymmetricChannel) Channel(input []int) []float64 {
-	rand.Seed(time.Now().UnixNano())
 	output := make([]float64, len(input))
 	zeroLLR := math.Log((1 - bsc.crossoverProbability) / bsc.crossoverProbability)
 
