@@ -23,10 +23,6 @@ func encodeRecursive(information []int) []int {
 	return ret
 }
 
-func C(received []float64, decoded []int) float64 {
-	return calcBitLogLikelihoodRatio(received, decoded)
-}
-
 func calcBitLogLikelihoodRatio(received []float64, decoded []int) float64 {
 	if len(received) == 1 {
 		return received[0]
@@ -52,7 +48,15 @@ func calcBitLogLikelihoodRatio(received []float64, decoded []int) float64 {
 		return 2 * math.Atanh(math.Tanh(llr1/2)*math.Tanh(llr2/2))
 	}
 	if decoded[len(decoded)-1] == 0 {
-		return llr1 + llr2
+		result := llr1 + llr2
+		if math.IsNaN(result) {
+			return 0
+		}
+		return result
 	}
-	return -llr1 + llr2
+	result := -llr1 + llr2
+	if math.IsNaN(result) {
+		return 0
+	}
+	return result
 }
