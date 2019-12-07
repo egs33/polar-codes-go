@@ -27,21 +27,13 @@ func NewPolarCode(length int, dimension int, channel channel.BinaryMemorylessCha
 		informationBits:   make([]int, 0),
 		informationBitSet: set.NewIntSet(),
 	}
-	channelErrorProbs := make([]struct {
-		index int
-		prob  float64
-	}, length)
-	for i := 0; i < length; i++ {
-		channelErrorProbs[i] = struct {
-			index int
-			prob  float64
-		}{index: i, prob: channel.CalcErrorProbabilityOfCombinedChannel(length, i+1)}
-	}
+	channelErrorProbs := channel.CalcErrorProbabilityOfCombinedChannels(length)
+
 	sort.Slice(channelErrorProbs, func(i, j int) bool {
-		return math.Abs(channelErrorProbs[i].prob) < math.Abs(channelErrorProbs[j].prob)
+		return math.Abs(channelErrorProbs[i].Prob) < math.Abs(channelErrorProbs[j].Prob)
 	})
 	for i := 0; i < dimension; i++ {
-		polarCode.informationBitSet.Add(channelErrorProbs[i].index)
+		polarCode.informationBitSet.Add(channelErrorProbs[i].Index - 1)
 	}
 	informationBits := polarCode.informationBitSet.Values()
 	sort.Ints(informationBits)

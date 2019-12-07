@@ -10,6 +10,24 @@ type BinarySymmetricChannel struct {
 	crossoverProbability float64
 }
 
+func (bsc BinarySymmetricChannel) CalcErrorProbabilityOfCombinedChannels(length int) []struct {
+	Index int
+	Prob  float64
+} {
+	memo = make(map[int]map[float64]float64)
+	channelErrorProbs := make([]struct {
+		Index int
+		Prob  float64
+	}, length)
+	for i := 0; i < length; i++ {
+		channelErrorProbs[i] = struct {
+			Index int
+			Prob  float64
+		}{Index: i + 1, Prob: bsc.CalcErrorProbabilityOfCombinedChannel(length, i+1)}
+	}
+	return channelErrorProbs
+}
+
 func (bsc BinarySymmetricChannel) CalcErrorProbabilityOfCombinedChannel(length int, index int) float64 {
 	llr0 := math.Log2((1 - bsc.crossoverProbability) / bsc.crossoverProbability)
 	return calcErrorProbabilityViaDensityEvolution(length, index,
