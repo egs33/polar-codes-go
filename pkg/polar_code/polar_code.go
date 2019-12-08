@@ -95,7 +95,7 @@ func (code PolarCode) sclDecodeInner(received []float64, listSize int) []listDec
 	decodedList := []listDecodePath{{pathMetrics: 0, bits: make([]int, 0)}}
 	for i := 0; i < code.length; i++ {
 		if !code.informationBitSet.Contains(i) {
-			for k, _ := range decodedList {
+			for k := range decodedList {
 				decodedList[k].bits = append(decodedList[k].bits, 0)
 			}
 			continue

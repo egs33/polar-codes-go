@@ -23,7 +23,7 @@ func (set *IntSet) Remove(value int) {
 
 func (set IntSet) Values() []int {
 	ret := make([]int, 0)
-	for v, _ := range set.values {
+	for v := range set.values {
 		ret = append(ret, v)
 	}
 	return ret
